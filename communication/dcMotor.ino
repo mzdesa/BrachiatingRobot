@@ -23,6 +23,7 @@ class DCMotor {
     double Kp = 1;
     int desPos = 3.14/3; //desired position in radians
 
+    public:
     /*
     Constructor for a motor pin object.
     Inputs:
