@@ -20,12 +20,12 @@ ServoMotors::ServoMotors(int servo_pin) {
     ESP32PWM::allocateTimer(3);   
 
     //set the servo periods
-    servo1.setPeriodHertz(50); 
-    servo2.setPeriodHertz(50);
+    servoL.setPeriodHertz(50); 
+    servoR.setPeriodHertz(50);
 
     //attach the servos to their PWM pins
-    servo1.attach(servoPin1, servoFreqLow, servoFreqHigh);
-    servo2.attach(servoPin2, servoFreqLow, servoFreqHigh);
+    servo1.attach(servoPinL, servoFreqLow, servoFreqHigh);
+    servo2.attach(servoPinR, servoFreqLow, servoFreqHigh);
 }
 
 /*
@@ -34,16 +34,16 @@ Inputs:
     des_pos_1 (double) : desired position in radians of the first servo
     des_pos_2 (double) : desired position in radians of the second servo
 */
-ServoMotors::setDesPos(double des_pos_1, double des_pos_2) {
-    desPos1 = des_pos_1;
-    desPos2 = des_pos_2;
+ServoMotors::setDesPos(double des_pos_L, double des_pos_R) {
+    desPosL = des_pos_L;
+    desPosR = des_pos_R;
 }
 
 /*
 Function to drive the servo motors to the desired position stored in the class
 */
 ServoMotors::driveDes() {
-    driveMotors(desPos1, desPos2);
+    driveMotors(desPosL, desPosR);
 }
 
 /*
@@ -58,8 +58,8 @@ ServoMotors::resetTimers() {
     ESP32PWM::allocateTimer(3);   
 
     //set the servo periods
-    servo1.setPeriodHertz(50); 
-    servo2.setPeriodHertz(50);
+    servoL.setPeriodHertz(50); 
+    servoR.setPeriodHertz(50);
 }
 
 /*
@@ -68,22 +68,22 @@ Inputs:
     desPos1 (int) : desired position from 0 to 180 of the first servo
     desPos2 (int) : desired position from 0 to 180 of the second servo
 */
-ServoMotors::driveMotors(int desPos1, int desPos2) {
+ServoMotors::driveMotors(int desPosL, int desPosR) {
     //drive the first servo motor to desPos1
-    servo1.write(desPos1);
+    servo1.write(desPosL);
     //derive the second servo motor to desPos2
-    servo2.write(desPos2);
+    servo2.write(desPosR);
 }
 
 /*
 Functions to get the angles of the two servo motors.
 Retrieves values from class paramterss.
 */
-ServoMotors::getDesAngle1() {
+ServoMotors::getDesAngleL() {
     //retrieve the desired angle of the first servo
-    return desPos1;
+    return desPosL;
 }
-ServoMotors::getDesAngle2() {
+ServoMotors::getDesAngleR() {
     //retrieve the desired angle of the second servo
-    return desPos2;
+    return desPosR;
 }

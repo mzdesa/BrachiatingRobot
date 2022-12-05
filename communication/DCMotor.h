@@ -6,7 +6,7 @@ This file contains utilities for driving a DC motor with an encoder.
 class DCMotor {
     public:
         DCMotor(int mp_1, int mp_2, int enc_1, int enc_2, int pwmCh1, int pwmCh2);
-        void setDesPos;
+        void setDesPos();
         void driveDes();
         double getAngle();
 
