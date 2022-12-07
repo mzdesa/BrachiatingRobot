@@ -8,8 +8,10 @@ class Electromagnet {
     private:
         //electromagnet signal pin from the ESP32
         int sPin;
+        int testPeriod;
     public:
         Electromagnet(int s_pin);
         void switchOn();
         void switchOff();
+        void emagTest();
 }
