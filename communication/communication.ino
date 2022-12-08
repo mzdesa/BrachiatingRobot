@@ -28,7 +28,10 @@ void setup() {
 }
 
 void loop() {
-  basicTests();
+  motors.dcControllerTest();
+  emagL.switchOn();
+  emagR.switchOn();
+  Serial.println(motors.getAngleMotorRight());
 }
 
 void basicTests() {
@@ -36,8 +39,8 @@ void basicTests() {
 //  emagL.emagTest();
 //  emagR.emagTest();
 
-  motors.driveServos(60, 60);
-  motors.driveOLTest();
+  motors.driveServos(41, 41);
+//  motors.driveOLTest();
   delay(15);
 }
 

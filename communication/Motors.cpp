@@ -207,3 +207,9 @@ void Motors::driveOLTest() {
     digitalWrite(mPin2R, LOW);
     motorR1.write(180);
 }
+
+void Motors::dcControllerTest() {
+    //give the controller a small setpoint that it must reach.Assume it starts at zero.
+    int setpt = 300;
+    driveDCR(setpt);
+}

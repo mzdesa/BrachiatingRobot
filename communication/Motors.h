@@ -20,6 +20,7 @@ class Motors {
         void driveDCL(int des_pos);
         void driveDCR(int des_pos);
         void driveOLTest();
+        void dcControllerTest();
     private:
         //Servo motors
         Servo servoL;
