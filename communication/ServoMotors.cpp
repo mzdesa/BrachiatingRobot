@@ -11,7 +11,7 @@ Inputs:
 */
 ServoMotors::ServoMotors() {
     //DEFAULT constructor
-    ServoMotors(25, 26);
+    ServoMotors(27, 33);
 }
 
 ServoMotors::ServoMotors(int servo_pin_L, int servo_pin_R) {
@@ -22,6 +22,10 @@ ServoMotors::ServoMotors(int servo_pin_L, int servo_pin_R) {
     //set the pin modes to OUTPUT
     pinMode(servoPinL, OUTPUT);
     pinMode(servoPinR, OUTPUT);
+
+    //set the default desired servo positions, 60 degrees (vertical)
+    // desPosL = 60;
+    // desPosR = 60;
 
     //define frequencies
     servoFreqLow = 500; //500 for the Pololu servo
@@ -39,7 +43,7 @@ ServoMotors::ServoMotors(int servo_pin_L, int servo_pin_R) {
 
     //attach the servos to their PWM pins
     servoL.attach(servoPinL, servoFreqLow, servoFreqHigh);
-    servoL.attach(servoPinR, servoFreqLow, servoFreqHigh);
+    servoR.attach(servoPinR, servoFreqLow, servoFreqHigh);
 }
 
 /*
@@ -75,6 +79,10 @@ void ServoMotors::resetTimers() {
     //set the servo periods
     servoL.setPeriodHertz(50); 
     servoR.setPeriodHertz(50);
+
+    //attach the servos to their PWM pins
+    servoL.attach(servoPinL, servoFreqLow, servoFreqHigh);
+    servoR.attach(servoPinR, servoFreqLow, servoFreqHigh);
     return;
 }
 
@@ -111,14 +119,16 @@ To be called repeatedly in the loop() function.
 */
 void ServoMotors::servoTest() {
     //drive the servo to an angle (is initialized at zero)
+    setDesPos(60, 0);
     driveDes();
-    //increment the desired positions or reset
-    if (getDesAngleL() < 180 || getDesAngleR() < 180){
-        setDesPos(getDesAngleL()+1, getDesAngleR()+1);
-    } else {
-        //reset the desired angles back to zero if above 180
-        setDesPos(0, 0); 
-    }
-    //delay slightly
-    delay(15);
+    // //now, move between 60 and 80 degrees on each
+    // for (int i = 60; i <= 80; i++) {
+    //     driveMotors(i, i);
+    //     delay(15);
+    // }
+    // //move backwards
+    // for (int i = 80; i>= 60; i--) {
+    //     driveMotors(i, i);
+    //     delay(15);
+    // }
 }
