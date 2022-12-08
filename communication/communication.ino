@@ -10,7 +10,7 @@
 Electromagnet emag(13);
 
 //create a servo object using the default constructor
-ServoMotors servos(25, 26);
+ServoMotors servos(27, 33);
 
 void setup() {
   
@@ -18,7 +18,7 @@ void setup() {
 
 void loop() {
   //Electromagnet test
-  emag.emagTest();
+  //emag.emagTest();
 
   //Servo motor test
   servos.servoTest();

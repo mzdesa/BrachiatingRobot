@@ -106,13 +106,19 @@ int ServoMotors::getDesAngleR() {
 }
 
 /*
-Servo motor test function. Writes a desired angle to the servo motors.
+Servo motor test function. Writes a desired angle to the servo motors that updates in a loop.
+To be called repeatedly in the loop() function.
 */
 void ServoMotors::servoTest() {
-    //drive the servo to an angle
-    int testAngle = 90;
-    setDesPos(testAngle, testAngle);
-
-    //call the function to drive the servo
+    //drive the servo to an angle (is initialized at zero)
     driveDes();
+    //increment the desired positions or reset
+    if (getDesAngleL() < 180 || getDesAngleR() < 180){
+        setDesPos(getDesAngleL()+1, getDesAngleR()+1);
+    } else {
+        //reset the desired angles back to zero if above 180
+        setDesPos(0, 0); 
+    }
+    //delay slightly
+    delay(15);
 }
