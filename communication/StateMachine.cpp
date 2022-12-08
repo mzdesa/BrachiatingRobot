@@ -37,7 +37,7 @@ StateMachine::StateMachine(DCMotor dc_motor_left, DCMotor dc_motor_right, ServoM
 /*
 Function to update the state based on the current values of the system
 */
-StateMachine::updateState() {
+void StateMachine::updateState() {
     //Finite state machine switch statement
     switch (state) {
         case 0:
@@ -172,7 +172,7 @@ StateMachine::updateState() {
             //turn the right electromagnet off
             eMagRight.switchOff();
 
-        case 4:
+        case 5:
             /* SECOND part of a swing
             In state 4, the following parameters are satisfies
             1. Right arm is moving freely forwards
@@ -197,7 +197,7 @@ StateMachine::updateState() {
             eMagRight.switchOn();
             break;
 
-        case 5:
+        case 6:
             /*
             In case 4, the following parameters are satisfied:
             1. The right arm is fixed to a bar
@@ -219,14 +219,14 @@ StateMachine::updateState() {
 /*
 Function to retrieve the state of the system
 */
-StateMachine::getState() {
+int StateMachine::getState() {
     return state;
 }
 
 /*
 Function to update the desired states of each motor depending on the state
 */
-StateMachine::updateDesStates() {
+void StateMachine::updateDesStates() {
     if (state == 0) {
         //set the desired DC states
         dcMotorRight.setDesPos(forwardDC);

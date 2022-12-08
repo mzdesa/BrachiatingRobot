@@ -30,4 +30,4 @@ class Communication {
     int binaryDecode(int b);
     void sendSignal(int n);
     int readSignal();
-}
+}; //NOTE: A semicolon is required at the end of a class.

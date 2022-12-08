@@ -1,8 +1,10 @@
+#ifndef StateMachine_H
+#define StateMachine_H
+
 #include <Arduino.h> //required to access the arduino functions.
-#include <DCMotor.h>
-#include <ServoMotors.h>
-#include <Trajectory.h>
-#include <Electromagnet.h>
+#include "DCMotor.h"
+#include "ServoMotors.h"
+#include "Electromagnet.h"
 /*
 This file contains a class for the state machine of the system, which manages the different 
 trajectories based on the state of the system.
@@ -15,7 +17,7 @@ class StateMachine {
         int tInter;
         DCMotor dcMotorLeft;
         DCMotor dcMotorRight;
-        ServoMotors ServoMotors;
+        ServoMotors servoMotors;
         Electromagnet eMagLeft;
         Electromagnet eMagRight;
 
@@ -32,4 +34,6 @@ class StateMachine {
         StateMachine(DCMotor dc_motor_left, DCMotor dc_motor_right, ServoMotors servo_motors, Electromagnet e_mag_left, Electromagnet e_mag_right, int num_bars);
         void updateState();
         int getState(); //retrieve the state of the system
-}
+};
+
+#endif

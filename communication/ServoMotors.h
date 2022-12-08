@@ -1,3 +1,6 @@
+#ifndef ServoMotors_H
+#define ServoMotors_H
+
 #include <Arduino.h> //required to access the arduino functions.
 #include <ESP32Servo.h> //Servo library
 /*
@@ -5,8 +8,9 @@ This file contains the utilities for driving BOTH servo motors.
 */
 class ServoMotors {
     public:
-        ServoMotors(int servo_pin);
-        void setDesPos(double des_pos_L, double des_pos_R);
+        ServoMotors(); //default constructor
+        ServoMotors(int servo_pin_L, int servo_pin_R);
+        void setDesPos(int des_pos_L, int des_pos_R);
         void driveDes();
         void resetTimers();
         int getDesAngleL();
@@ -25,8 +29,10 @@ class ServoMotors {
         int desPosR;
 
         //Servo freqeuncies
-        const int servoFreqLow = 500; //500 for the Pololu servo
-        const int servoFreqHigh = 2500; //2500 for the Pololu servo
+        int servoFreqLow; //500 for the Pololu servo
+        int servoFreqHigh; //2500 for the Pololu servo
         
         void driveMotors(int desPosL, int desPosR);
-}
+};
+
+#endif

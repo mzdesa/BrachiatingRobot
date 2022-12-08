@@ -11,7 +11,10 @@ Communication::Communication(int rle, int p0, int p1, int p2, int p3) {
     pin1 = p1;
     pin2 = p2;
     pin3 = p3;
-    commPins = {pin0, pin1, pin2, pin3};
+    commPins[0] = pin0;
+    commPins[1] = pin1;
+    commPins[2] = pin2;
+    commPins[3] = pin3;
 
     //Depending on the role, assign pins as input or output
     if (role == 0) {
@@ -35,7 +38,7 @@ n (int) : number to be encoded into binary (e.g. 13)
 Returns:
 binNum (int) : number written in binary (e.g. 1101)
 */
-Communication::binaryEncode(int n) {
+int Communication::binaryEncode(int n) {
     //clamp the integer n between 0 and 2^numPins - 1
     n = min(pow(2, numPins), n);
     n = max(n, 0);
@@ -57,7 +60,7 @@ b (int) : 4 digit binary number to be decoded
 Returns:
 decimalNum (int) : decimal representation of b, between 0 and 2^numPins
 */
-Communication::binaryDecode(int b) {
+int Communication::binaryDecode(int b) {
     //decode a binary number b into decimal
     int decimalNum = 0;
     int i = 0; //incremental variable
@@ -74,7 +77,7 @@ This function is ONLY to be used by the parent board.
 Inputs:
 n (int): number between 0 and 2^numPins to be sent across the boards
 */
-Communication::sendSignal(int n) {
+void Communication::sendSignal(int n) {
     //convert the input signal to binary
     int binNum = binaryEncode(n);
 
@@ -94,7 +97,7 @@ This function is ONLY to be used by the child board.
 Returns:
 n: decoded integer signal between 0 and 2^numPins.
 */
-Communication::readSignal() {
+int Communication::readSignal() {
     //loop over the input pins and generate a binary number to be decoded
     int binNum = 0;
     for (int i = 0; i<numPins; i++) {
