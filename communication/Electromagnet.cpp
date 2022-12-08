@@ -9,14 +9,16 @@ Inputs:
     s_pin (int) : pin number of signal pin used to switch the electromagnet on and off
 */
 Electromagnet::Electromagnet() {
-    //default constructor
-    sPin = 13;
-    testPeriod = 3000;
+    //default constructor - calls the other constructor
+    Electromagnet(13);
 }
 
 Electromagnet::Electromagnet(int s_pin) {
     sPin = s_pin; //store the signal pin
     testPeriod = 3000; //set the test period
+
+    //set the pin mode to OUTPUT
+    pinMode(sPin, OUTPUT);
 }
 
 /*
@@ -37,7 +39,7 @@ void Electromagnet::switchOff() {
 
 /*
 Function to provide a test case for the electromagnet. Runs the electromagnet high for 
-3 seconds, then low for 3 seconds. To be placed in the main loop of an arduino script.
+testPeriod ms, then low for testPeriod ms. Place in loop() to test.
 */
 void Electromagnet::emagTest() {
     switchOn();

@@ -11,34 +11,17 @@ Inputs:
 */
 ServoMotors::ServoMotors() {
     //DEFAULT constructor
-
-    //define the servo pins
-    servoPinL = 25;
-    servoPinR = 26;
-
-    //define frequencies
-    servoFreqLow = 500; //500 for the Pololu servo
-    servoFreqHigh = 2500; //2500 for the Pololu servo
-    
-    //allocate the timers
-    ESP32PWM::allocateTimer(0);
-    ESP32PWM::allocateTimer(1);
-    ESP32PWM::allocateTimer(2);
-    ESP32PWM::allocateTimer(3);   
-
-    //set the servo periods
-    servoL.setPeriodHertz(50); 
-    servoR.setPeriodHertz(50);
-
-    //attach the servos to their PWM pins
-    servoL.attach(servoPinL, servoFreqLow, servoFreqHigh);
-    servoL.attach(servoPinR, servoFreqLow, servoFreqHigh);
+    ServoMotors(25, 26);
 }
 
 ServoMotors::ServoMotors(int servo_pin_L, int servo_pin_R) {
     //define the servo pin
     servoPinL = servo_pin_L;
     servoPinR = servo_pin_R;
+
+    //set the pin modes to OUTPUT
+    pinMode(servoPinL, OUTPUT);
+    pinMode(servoPinR, OUTPUT);
 
     //define frequencies
     servoFreqLow = 500; //500 for the Pololu servo
@@ -120,4 +103,16 @@ int ServoMotors::getDesAngleL() {
 int ServoMotors::getDesAngleR() {
     //retrieve the desired angle of the second servo
     return desPosR;
+}
+
+/*
+Servo motor test function. Writes a desired angle to the servo motors.
+*/
+void ServoMotors::servoTest() {
+    //drive the servo to an angle
+    int testAngle = 90;
+    setDesPos(testAngle, testAngle);
+
+    //call the function to drive the servo
+    driveDes();
 }

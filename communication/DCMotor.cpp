@@ -15,43 +15,7 @@ Inputs:
 */
 DCMotor::DCMotor() {
     //DEFAULT DC MOTOR CONSTRUCTOR
-
-    //assign motor pins
-    mp1 = 27;
-    mp2 = 33;
-
-    //assign encoder pins
-    enc1 = 15;
-    enc2 = 32;
-
-    //assign PWM channels
-    pwmChannel1 = 1;
-    pwmChannel2 = 2;
-
-    //define constants
-    MAX_PWM = 255;
-    MIN_PWM = 0;
-    freq = 5000;
-    resolution = 8;
-    counts2rad = 1; //conversion factor between encoder counts & rad
-    rad2counts = 1;
-
-    //set up encoder
-    ESP32Encoder::useInternalWeakPullResistors = UP; //Enable weak pullups
-    encoder.attachHalfQuad(enc1, enc2);
-    encoder.setCount(0); //INITIALIZE the encoder count to be zero!!
-    
-    //set up pin modes for the motor pins
-    pinMode(mp1, OUTPUT);
-    pinMode(mp2, OUTPUT);
-
-    //set up PWM functionality on the PWM channels
-    ledcSetup(pwmChannel1, freq, resolution);
-    ledcSetup(pwmChannel2, freq, resolution);
-
-    //attach the channel to the GPIO motor pins
-    ledcAttachPin(mp1, pwmChannel1);
-    ledcAttachPin(mp2, pwmChannel2);
+    DCMotor(27, 33, 15, 32, 1, 2);
 }
 
 DCMotor::DCMotor(int mp_1, int mp_2, int enc_1, int enc_2, int pwmCh1, int pwmCh2) {
@@ -59,9 +23,17 @@ DCMotor::DCMotor(int mp_1, int mp_2, int enc_1, int enc_2, int pwmCh1, int pwmCh
     mp1 = mp_1;
     mp2 = mp_2;
 
+    //set the motor pin modes to OUTPUT
+    pinMode(mp1, OUTPUT);
+    pinMode(mp2, OUTPUT);
+
     //assign encoder pins
     enc1 = enc_1;
     enc2 = enc_2;
+
+    //set the encoder pin modes to INPUT
+    pinMode(enc1, INPUT);
+    pinMode(enc2, INPUT);
 
     //assign PWM channels
     pwmChannel1 = pwmCh1;

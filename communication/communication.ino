@@ -1,16 +1,25 @@
 #include "Electromagnet.h"
+#include "ServoMotors.h"
 
 /*
  * This file currently contains unit tests for the arduino libraries written.
+ * Note: default constructors are currently not working, do not use them.
  */
 
-int sPin = 13;
-Electromagnet eMag(sPin);
+//create an electromagnet object
+Electromagnet emag(13);
+
+//create a servo object using the default constructor
+ServoMotors servos(25, 26);
 
 void setup() {
-  Serial.begin(115200);
+  
 }
 
 void loop() {
-  Serial.println("hi");
+  //Electromagnet test
+  emag.emagTest();
+
+  //Servo motor test
+  servos.servoTest();
 }

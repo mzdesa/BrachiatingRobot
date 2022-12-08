@@ -15,6 +15,7 @@ class ServoMotors {
         void resetTimers();
         int getDesAngleL();
         int getDesAngleR();
+        void servoTest();
     private:
         //Define esp32Servo objects
         Servo servoL;
