@@ -22,19 +22,19 @@ Electromagnet::Electromagnet(int s_pin) {
 }
 
 /*
-Function to turn the electromagnet on. To turn the electromagnet on, set the 
-EN pin on the A4988 driver to LOW using the GPIO sPin.
+Function to turn the electromagnet on. To turn the electromagnet on, set the forward signal
+pin on the L298N Motor driver HIGH.
 */
 void Electromagnet::switchOn() {
-    digitalWrite(sPin, LOW);
+    digitalWrite(sPin, HIGH);
 }
 
 /*
-Function to turn the electromagnet off. To turn the electromagnet off, set the
-EN pin on the A4988 driver to HIGH using the GPIO sPin.
+Function to turn the electromagnet off. To turn the electromagnet off, set the forward signal
+pin on the L298N Motor driver LOW.
 */
 void Electromagnet::switchOff() {
-    digitalWrite(sPin, HIGH);
+    digitalWrite(sPin, LOW);
 }
 
 /*

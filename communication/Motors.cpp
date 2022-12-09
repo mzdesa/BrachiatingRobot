@@ -48,7 +48,7 @@ Motors::Motors(int servo_pin_L, int servo_pin_R, int m_pin_1_L, int m_pin_2_L, i
     encoderR.attachHalfQuad(encPin1R, encPin2R);
     encoderR.setCount(0); //INITIALIZE the encoder count to be zero!!
 
-    //set the default desired servo positions, 60 degrees (vertical)
+    //set the default desired servo positions, 60 degrees (vertical) - 41 degrees is a bar starting position.
     desPosServoL = 60;
     desPosServoR = 60;
 
@@ -92,6 +92,11 @@ Motors::Motors(int servo_pin_L, int servo_pin_R, int m_pin_1_L, int m_pin_2_L, i
     motorL2.attach(mPin2L, servoFreqLow, servoFreqHigh);
     motorR1.attach(mPin1R, servoFreqLow, servoFreqHigh);
     motorR2.attach(mPin2R, servoFreqLow, servoFreqHigh);
+
+    //drive the servos to their initial position!
+    int startPos = 41; //option to begin it in the start position with one fwd one back.
+    servoL.write(desPosServoL);
+    servoR.write(desPosServoR);
 }
 
 /*
@@ -145,6 +150,7 @@ int Motors::getAngleMotorRight() {
 
 /*
 Function to drive the DC motor to the correct position using FB control
+The right arm has a negative feedback gain as it is flipped.
 Inputs:
     des_pos (double) : desired position in radians. NOT the class attribute
 */
