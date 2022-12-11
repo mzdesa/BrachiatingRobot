@@ -11,11 +11,13 @@ Inputs:
     servo_motors (ServoMotors) : Servo motors (L and R) object
     num_bars (int) : number of total bars on the monkey bars
 */
-StateMachine::StateMachine(DCMotor dc_motor_left, DCMotor dc_motor_right, ServoMotors servo_motors, Electromagnet e_mag_left, Electromagnet e_mag_right, int num_bars) {
+StateMachine::StateMachine() {
+    //DEFAULT constructor
+    StateMachine(Motors(), Electromagnet(), Electromagnet(), 1);
+}
+StateMachine::StateMachine(Motors mtrs, Electromagnet e_mag_left, Electromagnet e_mag_right, int num_bars) {
     //store the motor objects in the class attributes
-    dcMotorLeft = dc_motor_left;
-    dcMotorRight = dc_motor_right;
-    servoMotors = servo_motors;
+    motors = mtrs;
 
     //store the electromagnet objects
     eMagLeft = e_mag_left;
@@ -31,7 +33,7 @@ StateMachine::StateMachine(DCMotor dc_motor_left, DCMotor dc_motor_right, ServoM
     numBars = num_bars;
 
     //set the time constants
-    tInter = 5000; //intermediate stopping time between swings in ms.
+    tInter = 2000; //intermediate stopping time between swings in ms.    
 }
 
 /*
@@ -52,9 +54,10 @@ void StateMachine::updateState() {
                 ...
             Exit conditions:
             This state is only visited for tInter time. It is the start state of the system and is exited once
-            the start button has been engaged. If bar count exceeds total bars, go to state 4.
+            the start button has been engaged. If bar count exceeds total bars, go to state 6 (terminal).
             */
 
+            Serial.println("hi");
             //update the desired states
             updateDesStates();
 
@@ -62,26 +65,32 @@ void StateMachine::updateState() {
             eMagLeft.switchOn();
             eMagRight.switchOn();
 
-            //delay for tInter seconds. This is a debugging feature that may be shortened in period.
-            delay(tInter);
-
+            if (firstRound == true) {
+                firstRound = false; //set it such that it is not the first traversal
+                delay(100000);
+            } else {
+                //delay for tInter seconds. This is a debugging feature that may be shortened in period.
+                delay(tInter);
+            }
+            
             if (barCounter >= numBars) {
                 //go to the terminal state, as the number of bars have been met
-                state = 4;
+                state = 6;
             } else {
                 //go to state 2 and swing to the next bar
-                state = 2;
+                state = 1;
                 barCounter++; //increment the bar counter
             }
             break;
         
         case 1:
-             /* FIRST part of a swing
+            /* FIRST part of a swing
             In state 1, the following parameters are satisfies
             1. Right arm is not moving.
             2. Left arm has detached from the bar and is moving backwards slightly to avoid hitting the bar.
             3. Right electromagnets are on
             4. Left electromagnets are off.
+            5. Wrist goes to flop position.
 
             Entrance conditions:
             - Case 1 may be entered only from case 0.
@@ -98,6 +107,16 @@ void StateMachine::updateState() {
 
             //turn the right electromagnet on
             eMagRight.switchOn();
+
+            callCounter ++;
+            if (callCounter >= callCutoff) {
+                //reset the call counter
+                callCounter = 0;
+
+                //move to the next state
+                state = 2;
+            }
+            break;
 
         case 2:
             /* SECOND part of a swing
@@ -122,7 +141,16 @@ void StateMachine::updateState() {
 
             //turn the right electromagnet on (should already be on)
             eMagRight.switchOn();
+
+            callCounter ++;
+            if (callCounter >= callCutoff) {
+                //reset the call counter
+                callCounter = 0;
+                //move to the next state
+                state = 3;
+            }
             break;
+
         case 3:
             /*
             In state 3, the following parameters are satisfied:
@@ -146,6 +174,18 @@ void StateMachine::updateState() {
 
             //turn the right electromagnet on
             eMagRight.switchOn();
+            
+            //wait on the bar for tInter seconds
+            delay(tInter);
+
+            if (barCounter >= numBars) {
+                //go to the terminal state, as the number of bars have been met
+                state = 6;
+            } else {
+                //go to state 2 and swing to the next bar
+                state = 4;
+                barCounter++; //increment the bar counter
+            }
             break;
 
         case 4:
@@ -155,6 +195,7 @@ void StateMachine::updateState() {
             2. Left arm stays still.
             3. Right electromagnets are off
             4. Left electromagnets are on.
+            5. Move right wrist to "flop" configuration
 
             Entrance conditions:
             - Case 4 may be entered only from case 3.
@@ -172,6 +213,15 @@ void StateMachine::updateState() {
             //turn the right electromagnet off
             eMagRight.switchOff();
 
+            callCounter ++;
+            if (callCounter >= callCutoff) {
+                //reset the call counter
+                callCounter = 0;
+                //move to the next state
+                state = 5;
+            }
+            break;
+
         case 5:
             /* SECOND part of a swing
             In state 4, the following parameters are satisfies
@@ -181,10 +231,10 @@ void StateMachine::updateState() {
             4. Left electromagnets are on.
 
             Entrance conditions:
-            - Case 4 may be entered only from case 3.
+            - Case 5 may be entered only from case 4.
 
             Exit conditions:
-            - Case 1 exits after a time period tSwing of seconds has passed and the electromagnet is in position. (moves to case 3)
+            - Case 5 exits after a time period tSwing of seconds has passed and the electromagnet is in position. (moves to case 0)
             */
 
             //update the desired states
@@ -195,6 +245,14 @@ void StateMachine::updateState() {
 
             //turn the right electromagnet on
             eMagRight.switchOn();
+
+            callCounter ++;
+            if (callCounter >= callCutoff) {
+                //reset the call counter
+                callCounter = 0;
+                //move to the next state
+                state = 0;
+            }
             break;
 
         case 6:
@@ -216,6 +274,78 @@ void StateMachine::updateState() {
     }
 }
 
+void StateMachine::state0() {
+    Serial.println("hi");
+    //update the desired states
+    updateDesStates();
+
+    //First, ensure that both electromagnets are on
+    eMagLeft.switchOn();
+    eMagRight.switchOn();
+
+    if (firstRound == true) {
+        firstRound = false; //set it such that it is not the first traversal
+        delay(100000);
+    } else {
+        //delay for tInter seconds. This is a debugging feature that may be shortened in period.
+        delay(tInter);
+    }
+}
+
+void StateMachine::state1() {
+    //update the desired states
+    updateDesStates();
+    
+    //turn the left electromagnet off
+    eMagLeft.switchOff();
+
+    //turn the right electromagnet on
+    eMagRight.switchOn();
+}
+
+void StateMachine::state2() {
+    //update the desired states
+    updateDesStates();
+
+    //turn the left electromagnet on.
+    eMagLeft.switchOn();
+
+    //turn the right electromagnet on (should already be on)
+    eMagRight.switchOn();
+}
+void StateMachine::state3() {
+    //update the desired states
+    updateDesStates();
+    
+    //turn the left electromagnet on
+    eMagLeft.switchOn();
+
+    //turn the right electromagnet on
+    eMagRight.switchOn();
+    
+    //wait on the bar for tInter seconds
+    delay(tInter);
+}
+void StateMachine::state4() {
+    //update the desired states
+    updateDesStates();
+    
+    //turn the left electromagnet on
+    eMagLeft.switchOn();
+
+    //turn the right electromagnet off
+    eMagRight.switchOff();
+}
+void StateMachine::state5() {
+    updateDesStates();
+
+    //turn the left electromagnet on
+    eMagLeft.switchOn();
+
+    //turn the right electromagnet on
+    eMagRight.switchOn();
+}
+
 /*
 Function to retrieve the state of the system
 */
@@ -228,41 +358,20 @@ Function to update the desired states of each motor depending on the state
 */
 void StateMachine::updateDesStates() {
     if (state == 0) {
-        //set the desired DC states
-        dcMotorRight.setDesPos(forwardDC);
-        dcMotorLeft.setDesPos(backwardSlightDC);
-
-        //set the desired servo states
-        servoMotors.setDesPos(backwardSlightServo, forwardServo);
-
+        //set desired motor states
+        motors.setDesPos(backwardSlightServoL, forwardServoR, backwardSlightDCL, forwardDCR);
     } else if (state == 1) {
-        //set the desired DC states
-        dcMotorRight.setDesPos(forwardDC);
-        dcMotorLeft.setDesPos(backwardFullDC);
-
-        //set the desired servo states
-        servoMotors.setDesPos(backwardFullServo, forwardServo);
+        //set the desired motor states
+        motors.setDesPos(backwardFullServoL, forwardServoR, backwardFullDCL, forwardDCR);
     } else if (state == 2) {
-        //set the desired DC states
-        dcMotorRight.setDesPos(backwardSlightDC);
-        dcMotorLeft.setDesPos(forwardDC);
-
-        //set the desired servo states
-        servoMotors.setDesPos(forwardServo, backwardSlightDC);
+        //set the desired motor states
+        motors.setDesPos(forwardServoL, backwardSlightDCR, forwardDCL, backwardSlightDCR);
     } else if (state == 3) {
-        //set the desired DC states
-        dcMotorRight.setDesPos(backwardSlightDC);
-        dcMotorLeft.setDesPos(forwardDC);
-
-        //set the desired servo states
-        servoMotors.setDesPos(forwardServo, backwardSlightDC);
+        //set the desired motor states
+        motors.setDesPos(forwardServoL, backwardSlightDCR, forwardDCL, backwardSlightDCR);
     } else if (state = 4) {
-        //set the desired DC states
-        dcMotorRight.setDesPos(backwardFullDC);
-        dcMotorLeft.setDesPos(forwardDC);
-
-        //set the desired servo states
-        servoMotors.setDesPos(forwardDC, backwardFullDC);
+        //set the desired motor states
+        motors.setDesPos(forwardDCL, backwardFullDCR, forwardDCL, backwardFullDCR);
     } else {
         //set the desired DC states to be whatever they currently are
         return; 

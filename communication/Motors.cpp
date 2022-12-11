@@ -95,8 +95,8 @@ Motors::Motors(int servo_pin_L, int servo_pin_R, int m_pin_1_L, int m_pin_2_L, i
 
     //drive the servos to their initial position!
     int startPos = 41; //option to begin it in the start position with one fwd one back.
-    servoL.write(desPosServoL);
-    servoR.write(desPosServoR);
+    servoL.write(startPos); //writes it NOT to the vertical but to 60
+    servoR.write(startPos);
 }
 
 /*
@@ -182,13 +182,15 @@ void Motors::driveDCL(int des_pos) {
 }
 
 void Motors::driveDCR(int des_pos) {
-    //next, calculate the control input
-    int controlInput = floor(Kp*(des_pos - (int32_t)encoderR.getCount()));
+    //next, calculate the control input SWITCHING the sign of Kp to (-)
+    int controlInput = floor(-Kp*(des_pos - (int32_t)encoderR.getCount()));
 
     //drive the motor with a PWM according to the control input
     if (controlInput >= 0) {
         //clamp the control input
         controlInput = min(MAX_PWM, max(MIN_PWM, controlInput));
+
+        Serial.println(controlInput);
 
         //write one pin high, the other low
         motorR1.write(controlInput);
@@ -200,6 +202,8 @@ void Motors::driveDCR(int des_pos) {
 
         //clamp the control input
         controlInput = min(MAX_PWM, max(MIN_PWM, controlInput));
+
+        Serial.println(controlInput);
 
         //drive the motor
         // motorR1.write(0);
