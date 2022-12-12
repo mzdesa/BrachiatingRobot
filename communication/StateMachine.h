@@ -13,9 +13,6 @@ class StateMachine {
         int barCounter;
         int numBars;
         int tInter;
-        Motors motors;
-        Electromagnet eMagLeft;
-        Electromagnet eMagRight;
 
         //Store desired states for each stage
         int forwardServoR = 41; //right front, left back
@@ -42,9 +39,13 @@ class StateMachine {
 
         void updateDesStates();
     public:
+        Motors motors;
+        Electromagnet eMagLeft;
+        Electromagnet eMagRight;
+
         int state;
         StateMachine();
-        StateMachine(Motors mtrs, Electromagnet e_mag_left, Electromagnet e_mag_right, int num_bars);
+        StateMachine(int servo_pin_L, int servo_pin_R, int m_pin_1_L, int m_pin_2_L, int m_pin_1_R, int m_pin_2_R, int enc1_L, int enc2_L, int enc1_R, int enc2_R, int s_pin_L, int s_pin_R, int num_bars);
         void updateState();
         void state0();
         void state1();

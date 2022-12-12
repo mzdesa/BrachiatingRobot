@@ -13,15 +13,15 @@ Inputs:
 */
 StateMachine::StateMachine() {
     //DEFAULT constructor
-    StateMachine(Motors(), Electromagnet(), Electromagnet(), 1);
+    StateMachine(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
 }
-StateMachine::StateMachine(Motors mtrs, Electromagnet e_mag_left, Electromagnet e_mag_right, int num_bars) {
+StateMachine::StateMachine(int servo_pin_L, int servo_pin_R, int m_pin_1_L, int m_pin_2_L, int m_pin_1_R, int m_pin_2_R, int enc1_L, int enc2_L, int enc1_R, int enc2_R, int s_pin_L, int s_pin_R, int num_bars) {
     //store the motor objects in the class attributes
-    motors = mtrs;
+    motors = Motors(servo_pin_L, servo_pin_R, m_pin_1_L, m_pin_2_L, m_pin_1_R, m_pin_2_R, enc1_L, enc2_L, enc1_R, enc2_R);
 
     //store the electromagnet objects
-    eMagLeft = e_mag_left;
-    eMagRight = e_mag_right;
+    eMagLeft = Electromagnet(s_pin_L);
+    eMagRight = Electromagnet(s_pin_R);
 
     //initialize system to be in the zero state
     state = 0;
@@ -33,7 +33,7 @@ StateMachine::StateMachine(Motors mtrs, Electromagnet e_mag_left, Electromagnet 
     numBars = num_bars;
 
     //set the time constants
-    tInter = 2000; //intermediate stopping time between swings in ms.    
+    tInter = 1500; //intermediate stopping time between swings in ms.    
 }
 
 /*
